@@ -32,7 +32,7 @@ The data are part of the supplemental materials by Oct et al. (2020),[^Ock2020] 
 
 [^Ock2020]: Ock, J., McAbee, S. T., Mulfinger, E., & Oswald, F. L. (2020). The practical effects of measurement invariance: Gender invariance in two Big Five personality measures. *Assessment, 27(4)*, 657-674. https://doi.org/10.1177/1073191119885018
 ```{r read-ock-data}
-data <- read.table(here::here("Ock 2020 Example", "IPIPFFM.dat"),
+data <- read.table(here::here("IPIPFFM.dat"),
                    header = TRUE)
 ```
 
