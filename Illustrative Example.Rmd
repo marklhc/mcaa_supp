@@ -1,0 +1,163 @@
+---
+title: "Illustrative Example"
+subtitle: "For the manuscript \"Classification Accuracy of Multidimensional Tests: Quantifying the Impact of Noninvariance\""
+output:
+  pdf_document: 
+    toc: true
+  github_document: 
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load-pkg}
+library(lavaan)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(broom)
+```
+
+```{r source function}
+# Load the provided code `PartInv_multi.R`
+source(here::here("PartInv_multi.R"))
+```
+
+## Import data
+
+The data are part of the supplemental materials by Oct et al. (2020),[^Ock2020] and can be obtained at https://journals.sagepub.com/doi/suppl/10.1177/1073191119885018
+
+
+[^Ock2020]: Ock, J., McAbee, S. T., Mulfinger, E., & Oswald, F. L. (2020). The practical effects of measurement invariance: Gender invariance in two Big Five personality measures. *Assessment, 27(4)*, 657-674. https://doi.org/10.1177/1073191119885018
+```{r read-ock-data}
+data <- read.table(here::here("Ock 2020 Example", "IPIPFFM.dat"),
+                   header = TRUE)
+```
+
+## Specify the model
+
+Preliminary analysis showed eight pairs of unique factor covariances need to be freed: A2 and A5, E4 and E7, I2 and I10, I8 and I9, A9 and I9, C3 and E6, A2 and E7, E7 and N2.
+
+```{r mini-ipip-models}
+model <- 'A =~  a2 + a5  + a7 + a9
+          C =~  c3 + c4 + c8 + c9
+          E =~ e1 + e4 + e6 + e7
+          N =~ n1 + n2 + n6 + n8
+          O =~ i2 + i8 + i9 + i10
+          a2 ~~ a5
+          e4 ~~ e7
+          i2 ~~ i10
+          i8 ~~ i9
+          a9 ~~ i9
+          c3 ~~ e6
+          a2 ~~ e7
+          e7 ~~ n2'
+```
+
+Conventional measurement invariance testing suggested the mini-IPIP scale support partial strict invariance across gender. Specifically, four items showed noninvariant intercepts across groups and three items showed noninvariant unique factor variance across groups. The results did not provide information on how these noninvariances may impact personnel selection using the mini-IPIP, so we demonstrated the MCAA framework in this example.
+
+```{r partial-strict-invariant-model, results = 'hold'}
+fit_strict <- cfa(model, data = data, group = "sex",
+                  group.equal = c("loadings", "Intercepts", "residuals"),
+                  group.partial = c("e6 ~ 1", "n1 ~ 1", "n2 ~ 1", "a2 ~ 1",
+                                    "n2 ~~ n2", "n1 ~~ n1", "c8 ~~ c8"),
+                  estimator = "MLR", std.lv = TRUE)
+```
+
+```{r glance-fit, results = 'asis'}
+# Fit indices
+knitr::kable(
+  broom::glance(fit_strict) %>%
+    select(AIC, BIC, cfi, chisq, npar, rmsea, srmr, tli, nobs),
+  format = "markdown", 
+  digits = 3
+)
+```
+
+```{r result-fit-strict}
+# extract parameter estimates
+result <- lavInspect(fit_strict, what = "est")
+```
+
+## Step 1: Selection Parameters
+
+Because the population sizes for females and for males are roughly equal, we used a mixing proportion($\pi_g$) of 0.5. The weights for latent factors and items were calculated based on the predictive validities reported by previous study (Drasgow et al., 2012). The codes for obtaining the weights can be found in the supplementary materials. For the selection cutoff, we assume that the mini-IPIP is used to select the top 25% of the candidates. 
+
+## Step 2: Selection Accuracy Under Strict Invariance
+
+To establish the baseline information of using the mini-IPIP for selecting males and females, we first obtained the parameter estimates under full strict invariance. The codes for extracting parameter estimates from *lavaan* model object are provided in the supplementary materials. Our function enables researchers to visualize and quantify the impact of item bias on selection accuracy indices. From the table, we can conclude female candidates would be selected in a slightly higher proportion compared to male candidates if strict invariance holds. 
+
+```{r fit-to-framework-strict}
+strict <- PartInvMulti_we(propsel = .25,
+             weights_item = c(0.008125, 0.008125, 0.008125, 0.008125,
+                              0.044875, 0.044875, 0.044875, 0.044875,
+                              0.117325, 0.117325, 0.117325, 0.117325,
+                              -0.048775, -0.048775, -0.048775, -0.048775,
+                              0.0309, 0.0309, 0.0309, 0.0309),
+             weights_latent = c(0.0325, 0.1795, 0.4693, -0.1951, 0.1236),
+             alpha_r = result[[2]]$alpha,
+             alpha_f = result[[1]]$alpha,
+             psi_r = result[[2]]$psi,
+             psi_f = result[[1]]$psi,
+             lambda_r = (result[[2]]$lambda + result[[1]]$lambda) / 2,
+             nu_r = (result[[2]]$nu + result[[1]]$nu) / 2,
+             Theta_r = (result[[2]]$theta + result[[1]]$theta) / 2)
+strict[1:5]
+```
+
+## Step 3: Selection Accuracy Under Partial Strict Invariance
+
+The selection accuracy of mini-IPIP under partial strict invariance can be obtained in the same way as in Step 2, except that `nu_r` and `nu_f` were different for males and for females, as well as `Theta_r` and `Theta_f`. The column $E\_{F}(\text{Male})$ represents the expected proportion selected for male candidates based on the latent score distributions of the female candidates. The AI ratio for male candidates is estimated to be 0.935, indicating a slight disadvantage for male candidates when doing selection using the mini-IPIP.
+
+```{r fit-to-framework-partial-strict}
+par_strict <- PartInvMulti_we(propsel = .25,
+              weights_item = c(0.008125, 0.008125, 0.008125, 0.008125,
+                               0.044875, 0.044875, 0.044875, 0.044875,
+                               0.117325, 0.117325, 0.117325, 0.117325,
+                               -0.048775, -0.048775, -0.048775, -0.048775,
+                               0.0309, 0.0309, 0.0309, 0.0309),
+              weights_latent = c(0.0325, 0.1795, 0.4693, -0.1951, 0.1236),
+              alpha_r = result[[2]]$alpha,
+              alpha_f = result[[1]]$alpha,
+              psi_r = result[[2]]$psi,
+              psi_f = result[[1]]$psi,
+              lambda_r = result[[2]]$lambda,
+              nu_r = result[[2]]$nu,
+              nu_f = result[[1]]$nu,
+              Theta_r = result[[2]]$theta,
+              Theta_f = result[[1]]$theta)
+par_strict[1:5]
+```
+
+## Step 4: Compare the Change in Selection Accuracy indices
+
+Comparing the results in Steps 2 and 3, researchers can quantify the impact of item bias on selection accuracy indices. In this example, we see in the presence of item bias, male candidates are selected in a lower proportion compared to when strict invariance holds ($24.0\%$ as opposed to $24.8\%$), whereas female candidates are selected in a higher proportion compared to when strict invariance holds ($26.0\%$ as opposed to $25.2\%$).
+
+[ML]: # (Yichi, I'm not sure what the part with setting the names to `colnames(result_table)` is doing. Could you double check? Thanks. )
+
+```{r display-results, echo = FALSE}
+result_table <- cbind(data.frame(strict[4])[5:8, ],
+                      data.frame(par_strict[4])[5:8, ])
+colnames(result_table) <- c("Proportion of Selection",
+                            "Cut Point on the Latent Scale",
+                            "Cut point on the Observed Scale")
+colnames(result_table) <- rep(c("Female", "Male", "$E_F(\\text{Male})$"), 2)
+result_table %>%
+  knitr::kable(
+    format = "markdown",
+    caption = "Impact of Item Bias on Selection Accuracy Indices",
+    digits = 3,
+    escape = FALSE
+  )
+```
+
+Note: The column $E_F(\text{Male})$ shows the expected proportion for male candidates if the latent distributions are the same for both genders.
+
+## Appendix: Parameter estimates
+
+```{r par-est}
+# Show parameter estimates
+parameterEstimates(fit_strict)
+```
