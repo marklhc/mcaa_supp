@@ -1,5 +1,6 @@
 pnormmix <- function(q, mean1 = 0, sd1 = 1, mean2 = 0, sd2 = 1, pmix1 = 0.5, 
                      lower.tail = TRUE) {
+  # Test
   # Distribution function (pdf) of a mixture of two normal distributions. 
   #
   # Args:
