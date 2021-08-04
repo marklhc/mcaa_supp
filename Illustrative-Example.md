@@ -10,7 +10,12 @@ Illustrative Example
     Invariance](#step-3-selection-accuracy-under-partial-strict-invariance)
 -   [Step 4: Compare the Change in Selection Accuracy
     indices](#step-4-compare-the-change-in-selection-accuracy-indices)
--   [Appendix: Parameter estimates](#appendix-parameter-estimates)
+-   [Compare MCAA With Separate Unidimensional
+    Analyses](#compare-mcaa-with-separate-unidimensional-analyses)
+-   [Compare Partial Invariance With Dropping Noninvariant
+    items](#compare-partial-invariance-with-dropping-noninvariant-items)
+-   [Appendix: Parameter estimates for the partial strict invariance
+    model](#appendix-parameter-estimates-for-the-partial-strict-invariance-model)
 
 ``` r
 library(lavaan)
@@ -118,11 +123,11 @@ proportion compared to male candidates if strict invariance holds.
 
 ``` r
 strict <- PartInvMulti_we(propsel = .25,
-             weights_item = c(0.008125, 0.008125, 0.008125, 0.008125,
-                              0.044875, 0.044875, 0.044875, 0.044875,
-                              0.117325, 0.117325, 0.117325, 0.117325,
-                              -0.048775, -0.048775, -0.048775, -0.048775,
-                              0.0309, 0.0309, 0.0309, 0.0309),
+             weights_item = c(0.1625, 0.1625, 0.1625, 0.1625,
+                              0.8975, 0.8975, 0.8975, 0.8975,
+                              2.3465, 2.3465, 2.3465, 2.3465,
+                              -0.9755, -0.9755, -0.9755, -0.9755,
+                              0.6180, 0.6180, 0.6180, 0.618),
              weights_latent = c(0.0325, 0.1795, 0.4693, -0.1951, 0.1236),
              alpha_r = result[[2]]$alpha,
              alpha_f = result[[1]]$alpha,
@@ -146,7 +151,7 @@ strict[1:5]
     ## [1] 0.4470718
     ## 
     ## $cutpt_z
-    ## [1] 2.509814
+    ## [1] 50.19677
     ## 
     ## $summary
     ##                     Reference Focal E_R.Focal.
@@ -244,7 +249,68 @@ Note: The column *E*<sub>*F*</sub>(Male) shows the expected proportion
 for male candidates if the latent distributions are the same for both
 genders.
 
-## Appendix: Parameter estimates
+## Compare MCAA With Separate Unidimensional Analyses
+
+## Compare Partial Invariance With Dropping Noninvariant items
+
+Sometimes researchers may want to remove the noninvariant items in the
+selection criteria. While this removes item biases, it may result in
+less effective classification due to reduced test length and thus
+decreased reliability. To illustrate this, we rerun MCAA without the
+items that showed noninvariance across genders (i.e., A2, C8, E6, N1,
+and N2). The table below shows
+
+``` r
+# Try removing noninvariant items (A2, )
+model_reduced <- "A =~  a5 + a7 + a9
+                  C =~  c3 + c4 + c9
+                  E =~ e1 + e4 + e7
+                  N =~ ln * n6 + ln * n8
+                  O =~ i2 + i8 + i9 + i10
+                  e4 ~~ e7
+                  i2 ~~ i10
+                  i8 ~~ i9
+                  a9 ~~ i9"
+fit_reduced <- cfa(model_reduced,
+  data = data, group = "sex",
+  group.equal = c("loadings", "Intercepts", "residuals"),
+  estimator = "MLR", std.lv = TRUE
+)
+pars_reduced <- lavInspect(fit_reduced, what = "est")
+reduced <- PartInvMulti_we(
+  propsel = .25,
+  weights_item = c(c(0.1625, 0.1625, 0.1625) * 4 / 3,
+                   c(0.8975, 0.8975, 0.8975) * 4 / 3,
+                   c(2.3465, 2.3465, 2.3465) * 4 / 3,
+                   c(-0.9755, -0.9755) * 4 / 2,
+                   0.6180, 0.6180, 0.6180, 0.618),
+  weights_latent = c(0.0325, 0.1795, 0.4693,
+                     -0.1951, 0.1236),
+  alpha_r = pars_reduced[[2]]$alpha,
+  alpha_f = pars_reduced[[1]]$alpha,
+  psi_r = pars_reduced[[2]]$psi,
+  psi_f = pars_reduced[[1]]$psi,
+  lambda_r = pars_reduced[[1]]$lambda,
+  nu_r = pars_reduced[[1]]$nu,
+  Theta_r = pars_reduced[[1]]$theta
+)
+```
+
+![](Illustrative-Example_files/figure-gfm/reduced-1.png)<!-- -->
+
+The table below shows lower selection accuracy with 15 invariant items
+for both groups, compared to 20 items with the five biased items.
+
+|                     | Female |  Male | *E*<sub>*F*</sub>(Male) |
+|:--------------------|-------:|------:|------------------------:|
+| Proportion selected |  0.251 | 0.249 |                   0.251 |
+| Success ratio       |  0.719 | 0.730 |                   0.719 |
+| Sensitivity         |  0.727 | 0.722 |                   0.727 |
+| Specificity         |  0.906 | 0.910 |                   0.906 |
+
+Impact of Item Bias on Selection Accuracy Indices
+
+## Appendix: Parameter estimates for the partial strict invariance model
 
 ``` r
 # Show parameter estimates
