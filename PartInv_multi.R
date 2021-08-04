@@ -1,6 +1,5 @@
 pnormmix <- function(q, mean1 = 0, sd1 = 1, mean2 = 0, sd2 = 1, pmix1 = 0.5, 
                      lower.tail = TRUE) {
-  # Test
   # Distribution function (pdf) of a mixture of two normal distributions. 
   #
   # Args:
@@ -25,7 +24,7 @@ pnormmix <- function(q, mean1 = 0, sd1 = 1, mean2 = 0, sd2 = 1, pmix1 = 0.5,
 }
 
 # test
- pnormmix(1, 0, 3.1, 1.7, 3.1, lower.tail = FALSE)
+pnormmix(1, 0, 3.1, 1.7, 3.1, lower.tail = FALSE)
 
 qnormmix <- function(p, mean1 = 0, sd1 = 1, mean2 = 0, sd2 = 1, pmix1 = 0.5, 
                      lower.tail = TRUE) {
@@ -238,11 +237,11 @@ PartInv_we <- function(propsel, cut_z = NULL, c, kappa_r, kappa_f = kappa_r,
          dat["Proportion selected", 1], 
        p = p)
 }
-PartInv_we(.10, c = c(1, 1, 1, 1), 
-           kappa_r = 0.5, kappa_f = 0, phi_r = 1,
-           lambda_r = c(.3, .5, .9, .7), tau_r = c(.225, .025, .010, .240),
-           tau_f = c(.225, -.05, .240, -.025),
-           Theta_r = diag(.96, 4))
+# PartInv_we(.10, c = c(1, 1, 1, 1), 
+#            kappa_r = 0.5, kappa_f = 0, phi_r = 1,
+#            lambda_r = c(.3, .5, .9, .7), tau_r = c(.225, .025, .010, .240),
+#            tau_f = c(.225, -.05, .240, -.025),
+#            Theta_r = diag(.96, 4))
 # 
 # PartInv(propsel = .25, kappa_r = 0.5, kappa_f = 0, phi_r = 1, 
 #         lambda_r = c(.3, .5, .9, .7), lambda_f = c(.3, .5, .7, .5),
