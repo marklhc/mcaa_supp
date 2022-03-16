@@ -6,13 +6,14 @@ output:
     toc: true
   github_document: 
     toc: true
+    math_method: null
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load-pkg}
+```{r load-pkg, message = FALSE}
 library(lavaan)
 library(tidyverse)
 library(knitr)
@@ -91,12 +92,13 @@ To establish the baseline information of using the mini-IPIP for selecting males
 
 ```{r fit-to-framework-strict}
 strict <- PartInvMulti_we(propsel = .25,
-             weights_item = c(0.1625, 0.1625, 0.1625, 0.1625,
-                              0.8975, 0.8975, 0.8975, 0.8975,
-                              2.3465, 2.3465, 2.3465, 2.3465,
-                              -0.9755, -0.9755, -0.9755, -0.9755,
-                              0.6180, 0.6180, 0.6180, 0.618),
-             weights_latent = c(0.0325, 0.1795, 0.4693, -0.1951, 0.1236),
+             weights_item = c(3.1385, 3.1385, 3.1385, 3.1385,
+                              8.3203, 8.3203, 8.3203, 8.3203,
+                              5.1586, 5.1586, 5.1586, 5.1586,
+                              -6.5870, -6.5870, -6.5870, -6.5870,
+                              1.7957, 1.7957, 1.7957, 1.7957),
+             # Agreeableness Conscientiousness Extraversion Neuroticism Openness
+             weights_latent = c(0.1256, 0.3328, 0.2063, -0.2635, 0.0718),
              alpha_r = result[[2]]$alpha,
              alpha_f = result[[1]]$alpha,
              psi_r = result[[2]]$psi,
@@ -113,12 +115,13 @@ The selection accuracy of mini-IPIP under partial strict invariance can be obtai
 
 ```{r fit-to-framework-partial-strict}
 par_strict <- PartInvMulti_we(propsel = .25,
-              weights_item = c(0.008125, 0.008125, 0.008125, 0.008125,
-                               0.044875, 0.044875, 0.044875, 0.044875,
-                               0.117325, 0.117325, 0.117325, 0.117325,
-                               -0.048775, -0.048775, -0.048775, -0.048775,
-                               0.0309, 0.0309, 0.0309, 0.0309),
-              weights_latent = c(0.0325, 0.1795, 0.4693, -0.1951, 0.1236),
+              weights_item = c(3.1385, 3.1385, 3.1385, 3.1385,
+                               8.3203, 8.3203, 8.3203, 8.3203,
+                               5.1586, 5.1586, 5.1586, 5.1586,
+                               -6.5870, -6.5870, -6.5870, -6.5870,
+                               1.7957, 1.7957, 1.7957, 1.7957),
+              # Agreeableness Conscientiousness Extraversion Neuroticism Openness
+              weights_latent = c(0.1256, 0.3328, 0.2063, -0.2635, 0.0718),
               alpha_r = result[[2]]$alpha,
               alpha_f = result[[1]]$alpha,
               psi_r = result[[2]]$psi,
@@ -135,11 +138,11 @@ par_strict[1:5]
 
 Comparing the results in Steps 2 and 3, researchers can quantify the impact of item bias on selection accuracy indices. In this example, we see in the presence of item bias, male candidates are selected in a lower proportion compared to when strict invariance holds ($24.0\%$ as opposed to $24.8\%$), whereas female candidates are selected in a higher proportion compared to when strict invariance holds ($26.0\%$ as opposed to $25.2\%$).
 
-[ML]: # (Yichi, I'm not sure what the part with setting the names to `colnames(result_table)` is doing. Could you double check? Thanks. )
-
 ```{r display-results, echo = FALSE}
-result_table <- cbind(data.frame(strict[4])[5:8, ],
-                      data.frame(par_strict[4])[5:8, ])
+result_table <- cbind(
+  data.frame(strict[4])[5:8, ],
+  data.frame(par_strict[4])[5:8, ]
+)
 colnames(result_table) <- rep(c("Female", "Male", "$E_F(\\text{Male})$"), 2)
 result_table %>%
   knitr::kable(
@@ -179,13 +182,12 @@ fit_reduced <- cfa(model_reduced,
 pars_reduced <- lavInspect(fit_reduced, what = "est")
 reduced <- PartInvMulti_we(
   propsel = .25,
-  weights_item = c(c(0.1625, 0.1625, 0.1625) * 4 / 3,
-                   c(0.8975, 0.8975, 0.8975) * 4 / 3,
-                   c(2.3465, 2.3465, 2.3465) * 4 / 3,
-                   c(-0.9755, -0.9755) * 4 / 2,
-                   0.6180, 0.6180, 0.6180, 0.618),
-  weights_latent = c(0.0325, 0.1795, 0.4693,
-                     -0.1951, 0.1236),
+  weights_item = c(c(3.1385, 3.1385, 3.1385) * 4 / 3,
+                   c(8.3203, 8.3203, 8.3203) * 4 / 3,
+                   c(5.1586, 5.1586, 5.1586) * 4 / 3,
+                   c(-6.5870, -6.5870) * 4 / 2,
+                   1.7957, 1.7957, 1.7957, 1.7957),
+  weights_latent = c(0.1256, 0.3328, 0.2063, -0.2635, 0.0718),
   alpha_r = pars_reduced[[2]]$alpha,
   alpha_f = pars_reduced[[1]]$alpha,
   psi_r = pars_reduced[[2]]$psi,

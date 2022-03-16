@@ -30,12 +30,10 @@ library(broom)
 source(here::here("PartInv_multi.R"))
 ```
 
-![](Illustrative-Example_files/figure-gfm/source%20function-1.png)<!-- -->
-
 ## Import data
 
-The data are part of the supplemental materials by Oct et al. (2020),[1]
-and can be obtained at
+The data are part of the supplemental materials by Oct et
+al. (2020),[^1] and can be obtained at
 <https://journals.sagepub.com/doi/suppl/10.1177/1073191119885018>
 
 ``` r
@@ -123,12 +121,13 @@ proportion compared to male candidates if strict invariance holds.
 
 ``` r
 strict <- PartInvMulti_we(propsel = .25,
-             weights_item = c(0.1625, 0.1625, 0.1625, 0.1625,
-                              0.8975, 0.8975, 0.8975, 0.8975,
-                              2.3465, 2.3465, 2.3465, 2.3465,
-                              -0.9755, -0.9755, -0.9755, -0.9755,
-                              0.6180, 0.6180, 0.6180, 0.618),
-             weights_latent = c(0.0325, 0.1795, 0.4693, -0.1951, 0.1236),
+             weights_item = c(3.1385, 3.1385, 3.1385, 3.1385,
+                              8.3203, 8.3203, 8.3203, 8.3203,
+                              5.1586, 5.1586, 5.1586, 5.1586,
+                              -6.5870, -6.5870, -6.5870, -6.5870,
+                              1.7957, 1.7957, 1.7957, 1.7957),
+             # Agreeableness Conscientiousness Extraversion Neuroticism Openness
+             weights_latent = c(0.1256, 0.3328, 0.2063, -0.2635, 0.0718),
              alpha_r = result[[2]]$alpha,
              alpha_f = result[[1]]$alpha,
              psi_r = result[[2]]$psi,
@@ -148,21 +147,21 @@ strict[1:5]
     ## [1] 0.25
     ## 
     ## $cutpt_xi
-    ## [1] 0.4470718
+    ## [1] 0.4732752
     ## 
     ## $cutpt_z
-    ## [1] 50.19677
+    ## [1] 231.3604
     ## 
     ## $summary
     ##                     Reference Focal E_R.Focal.
-    ## A (true positive)       0.188 0.184      0.188
-    ## B (false positive)      0.063 0.064      0.063
-    ## C (true negative)       0.685 0.688      0.685
-    ## D (false negative)      0.063 0.064      0.063
-    ## Proportion selected     0.252 0.248      0.252
-    ## Success ratio           0.748 0.743      0.748
-    ## Sensitivity             0.749 0.742      0.749
-    ## Specificity             0.915 0.915      0.915
+    ## A (true positive)       0.217 0.153      0.217
+    ## B (false positive)      0.064 0.066      0.064
+    ## C (true negative)       0.647 0.723      0.647
+    ## D (false negative)      0.072 0.058      0.072
+    ## Proportion selected     0.281 0.219      0.281
+    ## Success ratio           0.771 0.700      0.771
+    ## Sensitivity             0.751 0.725      0.751
+    ## Specificity             0.909 0.917      0.909
     ## 
     ## $ai_ratio
     ## [1] 1
@@ -180,12 +179,13 @@ doing selection using the mini-IPIP.
 
 ``` r
 par_strict <- PartInvMulti_we(propsel = .25,
-              weights_item = c(0.008125, 0.008125, 0.008125, 0.008125,
-                               0.044875, 0.044875, 0.044875, 0.044875,
-                               0.117325, 0.117325, 0.117325, 0.117325,
-                               -0.048775, -0.048775, -0.048775, -0.048775,
-                               0.0309, 0.0309, 0.0309, 0.0309),
-              weights_latent = c(0.0325, 0.1795, 0.4693, -0.1951, 0.1236),
+              weights_item = c(3.1385, 3.1385, 3.1385, 3.1385,
+                               8.3203, 8.3203, 8.3203, 8.3203,
+                               5.1586, 5.1586, 5.1586, 5.1586,
+                               -6.5870, -6.5870, -6.5870, -6.5870,
+                               1.7957, 1.7957, 1.7957, 1.7957),
+              # Agreeableness Conscientiousness Extraversion Neuroticism Openness
+              weights_latent = c(0.1256, 0.3328, 0.2063, -0.2635, 0.0718),
               alpha_r = result[[2]]$alpha,
               alpha_f = result[[1]]$alpha,
               psi_r = result[[2]]$psi,
@@ -207,24 +207,24 @@ par_strict[1:5]
     ## [1] 0.25
     ## 
     ## $cutpt_xi
-    ## [1] 0.4470718
+    ## [1] 0.4732752
     ## 
     ## $cutpt_z
-    ## [1] 2.509731
+    ## [1] 231.3297
     ## 
     ## $summary
     ##                     Reference Focal E_R.Focal.
-    ## A (true positive)       0.191 0.182      0.186
-    ## B (false positive)      0.070 0.058      0.058
-    ## C (true negative)       0.679 0.694      0.691
-    ## D (false negative)      0.061 0.066      0.066
-    ## Proportion selected     0.260 0.240      0.243
-    ## Success ratio           0.732 0.759      0.764
-    ## Sensitivity             0.758 0.733      0.739
-    ## Specificity             0.907 0.923      0.923
+    ## A (true positive)       0.214 0.155      0.220
+    ## B (false positive)      0.065 0.065      0.064
+    ## C (true negative)       0.646 0.724      0.648
+    ## D (false negative)      0.075 0.056      0.069
+    ## Proportion selected     0.279 0.220      0.284
+    ## Success ratio           0.766 0.706      0.775
+    ## Sensitivity             0.741 0.736      0.761
+    ## Specificity             0.908 0.918      0.910
     ## 
     ## $ai_ratio
-    ## [1] 0.9354029
+    ## [1] 1.015058
 
 ## Step 4: Compare the Change in Selection Accuracy indices
 
@@ -238,10 +238,10 @@ proportion compared to when strict invariance holds (26.0% as opposed to
 
 |                     | Female |  Male | *E*<sub>*F*</sub>(Male) | Female |  Male | *E*<sub>*F*</sub>(Male) |
 |:--------------------|-------:|------:|------------------------:|-------:|------:|------------------------:|
-| Proportion selected |  0.252 | 0.248 |                   0.252 |  0.260 | 0.240 |                   0.243 |
-| Success ratio       |  0.748 | 0.743 |                   0.748 |  0.732 | 0.759 |                   0.764 |
-| Sensitivity         |  0.749 | 0.742 |                   0.749 |  0.758 | 0.733 |                   0.739 |
-| Specificity         |  0.915 | 0.915 |                   0.915 |  0.907 | 0.923 |                   0.923 |
+| Proportion selected |  0.281 | 0.219 |                   0.281 |  0.279 | 0.220 |                   0.284 |
+| Success ratio       |  0.771 | 0.700 |                   0.771 |  0.766 | 0.706 |                   0.775 |
+| Sensitivity         |  0.751 | 0.725 |                   0.751 |  0.741 | 0.736 |                   0.761 |
+| Specificity         |  0.909 | 0.917 |                   0.909 |  0.908 | 0.918 |                   0.910 |
 
 Impact of Item Bias on Selection Accuracy Indices
 
@@ -279,13 +279,12 @@ fit_reduced <- cfa(model_reduced,
 pars_reduced <- lavInspect(fit_reduced, what = "est")
 reduced <- PartInvMulti_we(
   propsel = .25,
-  weights_item = c(c(0.1625, 0.1625, 0.1625) * 4 / 3,
-                   c(0.8975, 0.8975, 0.8975) * 4 / 3,
-                   c(2.3465, 2.3465, 2.3465) * 4 / 3,
-                   c(-0.9755, -0.9755) * 4 / 2,
-                   0.6180, 0.6180, 0.6180, 0.618),
-  weights_latent = c(0.0325, 0.1795, 0.4693,
-                     -0.1951, 0.1236),
+  weights_item = c(c(3.1385, 3.1385, 3.1385) * 4 / 3,
+                   c(8.3203, 8.3203, 8.3203) * 4 / 3,
+                   c(5.1586, 5.1586, 5.1586) * 4 / 3,
+                   c(-6.5870, -6.5870) * 4 / 2,
+                   1.7957, 1.7957, 1.7957, 1.7957),
+  weights_latent = c(0.1256, 0.3328, 0.2063, -0.2635, 0.0718),
   alpha_r = pars_reduced[[2]]$alpha,
   alpha_f = pars_reduced[[1]]$alpha,
   psi_r = pars_reduced[[2]]$psi,
@@ -303,10 +302,10 @@ for both groups, compared to 20 items with the five biased items.
 
 |                     | Female |  Male | *E*<sub>*F*</sub>(Male) |
 |:--------------------|-------:|------:|------------------------:|
-| Proportion selected |  0.251 | 0.249 |                   0.251 |
-| Success ratio       |  0.719 | 0.730 |                   0.719 |
-| Sensitivity         |  0.727 | 0.722 |                   0.727 |
-| Specificity         |  0.906 | 0.910 |                   0.906 |
+| Proportion selected |  0.279 | 0.221 |                   0.279 |
+| Success ratio       |  0.724 | 0.669 |                   0.724 |
+| Sensitivity         |  0.710 | 0.686 |                   0.710 |
+| Specificity         |  0.892 | 0.907 |                   0.892 |
 
 Impact of Item Bias on Selection Accuracy Indices
 
@@ -495,7 +494,7 @@ parameterEstimates(fit_strict)
     ## 175   N ~1         2     2       -0.049 0.111  -0.444  0.657   -0.266    0.168
     ## 176   O ~1         2     2       -0.458 0.166  -2.764  0.006   -0.783   -0.133
 
-[1] Ock, J., McAbee, S. T., Mulfinger, E., & Oswald, F. L. (2020). The
-practical effects of measurement invariance: Gender invariance in two
-Big Five personality measures. *Assessment, 27(4)*, 657-674.
-<https://doi.org/10.1177/1073191119885018>
+[^1]: Ock, J., McAbee, S. T., Mulfinger, E., & Oswald, F. L. (2020). The
+    practical effects of measurement invariance: Gender invariance in
+    two Big Five personality measures. *Assessment, 27(4)*, 657-674.
+    <https://doi.org/10.1177/1073191119885018>
